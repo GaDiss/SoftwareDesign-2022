@@ -3,8 +3,10 @@ import actors.Query
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.UntypedAbstractActor
+import org.junit.FixMethodOrder
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
+import org.junit.runners.MethodSorters
 import searchers.QuerySearcher
 import searchers.StubSearcher
 import stub.StubServer
@@ -13,7 +15,7 @@ import kotlin.test.assertEquals
 
 
 
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ActorTests {
     @Test
     fun testSingleServer() {
@@ -52,8 +54,8 @@ class ActorTests {
 
     @Test
     fun testShortTimeoutServer() {
-        StubServer(PORT, listOf(GOOGLE, BANG), LONG_TIMEOUT).use {
-            StubServer(PORT + 1, listOf(YANDEX), SHORT_TIMEOUT).use {
+        StubServer(PORT2, listOf(GOOGLE, BANG), LONG_TIMEOUT).use {
+            StubServer(PORT, listOf(YANDEX), SHORT_TIMEOUT).use {
                 runRequest(
                     setOf(YANDEX), listOf(
                         StubSearcher(GOOGLE, "localhost:$PORT"),
@@ -92,13 +94,13 @@ class ActorTests {
         override fun onReceive(message: Any?) {
             if (message is HashMap<*, *>) {
                 assertEquals(
-                    message.size, expected.size,
+                    expected.size, message.size,
                     "Expected responses ${expected.size} servers"
                 )
                 for (e in message) {
                     assert(expected.contains(e.key)) { "Unexpected response" }
                     val results = e.value as List<*>
-                    assertEquals(results.size, 5)
+                    assertEquals(5, results.size)
                 }
             }
         }
@@ -108,7 +110,8 @@ class ActorTests {
         private val SHORT_TIMEOUT = Duration.ofMillis(500)
         private val DEFAULT_TIMEOUT = Duration.ofSeconds(1)
         private val LONG_TIMEOUT = Duration.ofMillis(1500)
-        private const val PORT = 8888
+        private const val PORT = 8088
+        private const val PORT2 = 8091
         private const val GOOGLE = "google"
         private const val YANDEX = "yandex"
         private const val BANG = "bing"

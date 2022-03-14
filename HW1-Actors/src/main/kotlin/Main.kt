@@ -6,7 +6,7 @@ import stub.StubServer
 import java.time.Duration
 
 fun main(args: Array<String>) {
-    val port = 8081
+    val port = 8082
     val google = "google"
     val yandex = "yandex"
     val bing = "bing"

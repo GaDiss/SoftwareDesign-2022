@@ -10,7 +10,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 class StubSearcher(override val name: String, private val host: String) : QuerySearcher {
-    override fun getTopResults(query: String): Response {
+    override fun getTopResults(query: String): Response? {
         val encQuery = URLEncoder.encode(query, Charsets.UTF_8)
         val uri = URI.create("http://$host/$name?q=$encQuery")
 
